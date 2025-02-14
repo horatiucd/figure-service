@@ -26,7 +26,7 @@ public class FigureService {
 
     @Transactional(readOnly = true)
     public Figure findById(long id) {
-        return figure(id);
+        return identifyFigure(id);
     }
 
     @Transactional
@@ -41,18 +41,18 @@ public class FigureService {
 
     @Transactional
     public Figure update(Figure figure) {
-        Figure entity = figure(figure.getId());
+        Figure entity = identifyFigure(figure.getId());
         entity.setName(figure.getName());
         return figureRepository.save(entity);
     }
 
     @Transactional
     public void delete(long id) {
-        figure(id);
+        identifyFigure(id);
         figureRepository.deleteById(id);
     }
 
-    private Figure figure(long id) {
+    private Figure identifyFigure(long id) {
         return figureRepository.findById(id)
                 .orElseThrow(() -> new CustomException("Figure not found."));
     }

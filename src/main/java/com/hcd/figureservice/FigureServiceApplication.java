@@ -27,6 +27,7 @@ public class FigureServiceApplication {
             figureService.create(new Figure("Kay"));
             figureService.create(new Figure("Cole"));
             figureService.create(new Figure("Zane"));
+            figureService.create(new Figure("Nya"));
 
             log.info("Available figures:");
             figureService.findAll()
