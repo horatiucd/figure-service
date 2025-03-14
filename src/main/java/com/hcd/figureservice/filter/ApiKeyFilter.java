@@ -18,13 +18,18 @@ import java.util.Collection;
 
 public class ApiKeyFilter extends GenericFilterBean {
 
+    private final String apiKey;
+
+    public ApiKeyFilter(String apiKey) {
+        this.apiKey = apiKey;
+    }
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-        String apiKey = httpRequest.getHeader("X-API-KEY");
-        if (apiKey == null ||
-                !apiKey.equals("123-abc-456-def-789-ghi")) {
+        String headerApiKey = httpRequest.getHeader("X-API-KEY");
+        if (!apiKey.equals(headerApiKey)) {
             HttpServletResponse httpResponse = (HttpServletResponse) response;
             httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             httpResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);

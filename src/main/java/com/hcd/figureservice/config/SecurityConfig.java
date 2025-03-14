@@ -1,6 +1,7 @@
 package com.hcd.figureservice.config;
 
 import com.hcd.figureservice.filter.ApiKeyFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -16,7 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http, @Value("${app.api.key}") String apiKey) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
@@ -24,7 +25,7 @@ public class SecurityConfig {
                 )
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new ApiKeyFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new ApiKeyFilter(apiKey), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }
