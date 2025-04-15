@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -28,7 +29,7 @@ public class FigureController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FigureResponse>> getAll() {
+    public ResponseEntity<List<FigureResponse>> all() {
         List<FigureResponse> response = figureService.findAll().stream()
                 .map(figure -> new FigureResponse(figure.getId(), figure.getName()))
                 .toList();
@@ -36,7 +37,7 @@ public class FigureController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FigureResponse> getOne(@PathVariable Long id) {
+    public ResponseEntity<FigureResponse> one(@PathVariable Long id) {
         Figure figure = figureService.findById(id);
         FigureResponse response = new FigureResponse(figure.getId(), figure.getName());
         return ResponseEntity.ok(response);
@@ -44,9 +45,10 @@ public class FigureController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public FigureResponse create(@RequestBody FigureRequest request) {
+    public ResponseEntity<FigureResponse> create(@RequestBody FigureRequest request) {
         Figure figure = figureService.create(new Figure(request.name()));
-        return new FigureResponse(figure.getId(), figure.getName());
+        return ResponseEntity.created(URI.create("/api/v1/figures/" + figure.getId()))
+                .body(new FigureResponse(figure.getId(), figure.getName()));
     }
 
     @PutMapping("/{id}")
