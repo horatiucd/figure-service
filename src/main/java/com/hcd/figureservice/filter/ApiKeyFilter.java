@@ -28,7 +28,7 @@ public class ApiKeyFilter extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-        String headerApiKey = httpRequest.getHeader("X-API-KEY");
+        String headerApiKey = httpRequest.getHeader("x-api-key");
         if (!apiKey.equals(headerApiKey)) {
             HttpServletResponse httpResponse = (HttpServletResponse) response;
             httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
