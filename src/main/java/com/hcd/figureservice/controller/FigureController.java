@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/figures")
@@ -30,7 +31,11 @@ public class FigureController {
 
     @GetMapping
     public ResponseEntity<List<FigureResponse>> all() {
-        List<FigureResponse> response = figureService.findAll().stream()
+        List<Figure> figures = figureService.findAll();
+        if (figures.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        List<FigureResponse> response = figures.stream()
                 .map(figure -> new FigureResponse(figure.getId(), figure.getName()))
                 .toList();
         return ResponseEntity.ok(response);
@@ -38,7 +43,11 @@ public class FigureController {
 
     @GetMapping("/{id}")
     public ResponseEntity<FigureResponse> one(@PathVariable Long id) {
-        Figure figure = figureService.findById(id);
+        Optional<Figure> optional = figureService.findById(id);
+        if (optional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Figure figure = optional.get();
         FigureResponse response = new FigureResponse(figure.getId(), figure.getName());
         return ResponseEntity.ok(response);
     }
@@ -64,5 +73,10 @@ public class FigureController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         figureService.delete(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/random")
+    public ResponseEntity<FigureResponse> random() {
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -24,12 +25,16 @@ public class FigureService {
     }
 
     @Transactional(readOnly = true)
-    public Figure findById(long id) {
-        return identifyFigure(id);
+    public Optional<Figure> findById(long id) {
+        return figureRepository.findById(id);
     }
 
     @Transactional
     public Figure create(Figure figure) {
+        Optional<Figure> existingFigure = figureRepository.findByName(figure.getName());
+        if (existingFigure.isPresent()) {
+            throw new CustomException("A Figure with the same 'name' already exists.");
+        }
         figure.setCode(UUID.randomUUID().toString());
         return figureRepository.save(figure);
     }

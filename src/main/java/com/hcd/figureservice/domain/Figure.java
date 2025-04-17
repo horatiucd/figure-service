@@ -17,7 +17,7 @@ public class Figure {
     @Column(name = "name", unique = true, nullable = false)
     private String name;
 
-    @Column(name = "code", unique = true, nullable = false)
+    @Column(name = "code", nullable = false)
     private String code;
 
     public Figure() {
